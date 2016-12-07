@@ -113,11 +113,17 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def do_DELETE(self):
         self.load_session()
         bank = Bank()
+        user = UserDB()
         if self.path.startswith("/customers/"):
             matched = False
             allUsers = user.GetUsersByEmail()
+            email = ""
             for i in allUsers:
-                if gSesh.sessionData[self.session] == i[0] and i[0] != "":
+                for key in gSesh.sessionData:
+                    email = key
+                    break
+                print(self.session, gSesh.sessionData, i, gSesh.sessionData.get(email), "SESSION STUFF")
+                if gSesh.sessionData.get(email) == i[0] and i[0] != "":
                     matched = True
                     break
                 else:
@@ -136,6 +142,7 @@ class MyRequestHandler(BaseHTTPRequestHandler):
     def do_PUT(self):
         self.load_session()
         bank = Bank()
+        user = UserDB()
         if self.path.startswith("/customers/"):
             length = self.HeaderNoCookie204()
             data, count = self.parseInput(length)
